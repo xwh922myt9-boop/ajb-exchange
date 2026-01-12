@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AJB Exchange</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+    }
+    header {
+      background: #0a6cf1;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+    header img {
+      height: 60px;
+    }
+    nav {
+      background: #084fb3;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label { margin-top: 15px; display: block; font-weight: bold; }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0a6cf1;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover { background: #084fb3; }
+    .result { margin-top: 15px; font-size: 18px; font-weight: bold; color: green; }
+    .section { margin-top: 40px; }
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #eee;
+      margin-top: 40px;
+    }
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="./AJB_Exchange_logo.png" alt="AJB Exchange Logo" />
+  <h1>AJB Exchange</h1>
+</header>
+
+<nav>
+  <a href="#exchange">Exchange</a>
+  <a href="#payments">Payments</a>
+  <a href="#request">Request</a>
+  <a href="#rates">Rates</a>
+  <a href="#admin">Admin</a>
+</nav>
+
+<div class="container" id="exchange">
+  <h2>Live Currency Exchange</h2>
+
+  <label>Amount</label>
+  <input type="number" id="amount" placeholder="Enter amount" />
+
+  <label>From</label>
+  <select id="from">
+    <option value="USD">USD</option>
+    <option value="GHS">GHS</option>
+    <option value="EUR">EUR</option>
+    <option value="GBP">GBP</option>
+    <option value="CNY">CNY</option>
+    <option value="USDT">USDT</option>
+  </select>
+
+  <label>To</label>
+  <select id="to">
+    <option value="GHS">GHS</option>
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="GBP">GBP</option>
+    <option value="CNY">CNY</option>
+    <option value="USDT">USDT</option>
+  </select>
+
+  <button onclick="convert()">Convert</button>
+  <div class="result" id="result"></div>
+</div>
+
+<div class="container section" id="payments">
+  <h2>Mobile Money Payments</h2>
+  <p><strong>MTN MoMo:</strong> 0504030393</p>
+  <p><strong>Telecel Cash:</strong> 0200000000</p>
+  <p><strong>AirtelTigo Money:</strong> 0270000000</p>
+  <p><em>Please make payment, then submit your exchange request with proof.</em></p>
+</div>
+
+<div class="container section" id="request">
+  <h2>Exchange Request</h2>
+  <label>Full Name</label>
+  <input type="text" />
+
+  <label>Phone Number</label>
+  <input type="text" />
+
+  <label>Details</label>
+  <textarea placeholder="e.g. Exchange $500 to GHS"></textarea>
+
+  <button>Submit Request</button>
+</div>
+
+<div class="container section" id="rates">
+  <h2>Today’s Rates (Editable by Admin)</h2>
+  <p>USD → GHS: <span id="usdghs">12.50</span></p>
+  <p>GBP → GHS: <span id="gbpghs">16.00</span></p>
+  <p>EUR → GHS: <span id="eurghs">13.60</span></p>
+  <p>CNY → GHS: <span id="cnyghs">1.75</span></p>
+</div>
+
+<div class="container section" id="admin">
+  <h2>Admin Login</h2>
+  <button onclick="adminLogin()">Login as Admin</button>
+
+  <div id="adminPanel" style="display:none;">
+    <h3>Update Rates</h3>
+
+    <label>USD to GHS</label>
+    <input type="number" id="adminUsdGhs" />
+
+    <label>GBP to GHS</label>
+    <input type="number" id="adminGbpGhs" />
+
+    <label>EUR to GHS</label>
+    <input type="number" id="adminEurGhs" />
+
+    <label>CNY to GHS</label>
+    <input type="number" id="adminCnyGhs" />
+
+    <button onclick="updateRates()">Update Rates</button>
+  </div>
+</div>
+
+<a class="whatsapp" href="https://wa.me/233504030393" target="_blank">WhatsApp Us</a>
+
+<footer>
+  <p>© 2026 AJB Exchange</p>
+</footer>
+
+<script>
+  let rates = {
+    USD: { GHS: 12.5 },
+    GBP: { GHS: 16.0 },
+    EUR: { GHS: 13.6 },
+    CNY: { GHS: 1.75 },
+    USDT: { GHS: 12.4 },
+    GHS: { USD: 0.08, GBP: 0.062, EUR: 0.074, CNY: 0.57, USDT: 0.08 }
+  };
+
+  async function fetchLiveRates() {
+    try {
+      // DEMO URL – activate when hosted
+      // const res = await fetch('https://v6.exchangerate-api.com/v6/YOUR_API_KEY/latest/USD');
+      // const data = await res.json();
+      // rates.USD.GHS = data.conversion_rates.GHS;
+      console.log('Live rates ready (API can be activated)');
+    } catch (err) {
+      console.log('Using manual rates');
+    }
+  }
+
+  fetchLiveRates();
+
+  function convert() {
+    const amount = document.getElementById('amount').value;
+    const from = document.getElementById('from').value;
+    const to = document.getElementById('to').value;
+
+    if (!rates[from] || !rates[from][to]) {
+      document.getElementById('result').innerText = 'Rate not available';
+      return;
+    }
+    const result = amount * rates[from][to];
+    document.getElementById('result').innerText = `You will receive ${result.toFixed(2)} ${to}`;
+  }
+
+  function adminLogin() {
+    const pass = prompt('Enter admin password');
+    if (pass === 'admin123') {
+      document.getElementById('adminPanel').style.display = 'block';
+      alert('Admin access granted');
+    } else {
+      alert('Wrong password');
+    }
+  }
+
+  function updateRates() {
+    const u = document.getElementById('adminUsdGhs').value;
+    const g = document.getElementById('adminGbpGhs').value;
+    const e = document.getElementById('adminEurGhs').value;
+    const c = document.getElementById('adminCnyGhs').value;
+
+    if (u) { rates.USD.GHS = parseFloat(u); document.getElementById('usdghs').innerText = u; }
+    if (g) { rates.GBP.GHS = parseFloat(g); document.getElementById('gbpghs').innerText = g; }
+    if (e) { rates.EUR.GHS = parseFloat(e); document.getElementById('eurghs').innerText = e; }
+    if (c) { rates.CNY.GHS = parseFloat(c); document.getElementById('cnyghs').innerText = c; }
+
+    alert('Rates updated successfully');
+  }
+</script>
+
+</body>
+</html>
